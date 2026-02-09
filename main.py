@@ -1,5 +1,4 @@
 import argparse
-import csv
 from report_management.report_manager import ReportFactory
 
 
