@@ -28,14 +28,22 @@ class BaseReport(ABC):
     def display(self, result):
         pass
 
-
-
 class ReportFactory:
-    @staticmethod
-    def create_report(report_name):
-        match report_name:
-            case 'average-gdp':
-                from report_management.reports.average_gdp import AverageGDPReport
-                return AverageGDPReport()
-            case _:
-                raise ValueError(f"Неизвестный отчет: {report_name}")
+    _reports: dict[str, type[BaseReport]] = {}
+
+    
+    @classmethod
+    def register(cls, report_name: str):
+        def decorator(report_class: BaseReport):
+            cls._reports[report_name] = report_class
+            return report_class
+        return decorator
+
+    @classmethod
+    def get_report(cls, report_name: str) -> BaseReport:
+        if report_name not in cls._reports:
+            raise ValueError(f"report {report_name} does not exist")
+        
+        report_class = cls._reports[report_name]
+        report_instance = report_class()
+        return report_instance

@@ -1,11 +1,14 @@
-from report_management.report_manager import BaseReport
+from report_management.report_manager import BaseReport, ReportFactory
 from tabulate import tabulate
 from collections import defaultdict
 
-
+@ReportFactory.register(report_name='average_gdp')
 class AverageGDPReport(BaseReport):
     def __init__(self):
         super().__init__(required_columns=['country', 'gdp'])
+
+    def read_data(self, filenames):
+        return super().read_data(filenames)
     
     def process_data(self, data: list[str]):
         country_gdp = defaultdict(list)
